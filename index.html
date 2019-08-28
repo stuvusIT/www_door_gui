@@ -1,87 +1,62 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <title>Door Status</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    
-    <script>
-     function doSetup(){
-         $('#button').click(function (event){
-             if($('#open').val() == 1){
-                 state_string = "Unlocked";
-             }else{
-                 state_string = "Locked";
-             };
-             $.ajax({
-                    url: 'https://door.stuvus.uni-stuttgart.de/castle/lock',   
-                    type: 'PUT',  
-                    dataType: "json",
-                    data: JSON.stringify( {state: state_string}),
-                    success: true 
-                })
-                ;
-         });
-     };
-     doSetup();
-     function doPoll(){
-         $.get('https://door.stuvus.uni-stuttgart.de/castle/lock', function(data, status){
-	     $('#status').text(data.state);
-	     if(data.state == "Locked"){
-	     	$('#status').removeClass("btn-success").addClass("btn-danger");
-	     	$('#button').text("Open Door");
-	     	$('#open').val("1");
-		$('#image').attr("src","/img/stuvus-icon-locked.png");
-	     }else{
-	     	$('#status').removeClass("btn-danger").addClass("btn-success");
-	     	$('#button').text("Lock Door");
-	     	$('#open').val("0");
-		$('#image').attr("src","/img/stuvus-icon-open.png");
-	     }
-
-             setTimeout(doPoll,0500);
-         });
-     };
-     $( document ).ready(function() {
-	 doSetup();
-         doPoll();
-     });
-
-
-    </script>
-
-    <!-- Bootstrap core CSS -->
-<link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-    <!-- Custom styles for this template -->
-    <link href="css/door.css" rel="stylesheet">
-  </head>
-  <body class="text-center">
-  <form class="form-door">
-  <img id="image" class="mb-4" src="/img/stuvus-icon-locked.png" alt="" width="72" height="72">
-  <h1 class="h3 mb-3 btn-danger font-weight-normal" id="status">Locked</h1>
-  <button id="button" class="btn btn-lg btn-primary btn-block" type="button">Open Door</button>
-  <input id="open" name="open" type="hidden" value="1">
-</form>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<title>Door Status</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script>
+			var url = '/castle/lock';
+			function doSetup(){
+				$('#button').click(function (event){
+					if($('#open').val() == 1){
+						state_string = 'Unlocked';
+					}else{
+						state_string = 'Locked';
+					};
+					$.ajax({
+						url: url,
+						type: 'PUT',
+						dataType: 'json',
+						data: JSON.stringify({ state: state_string }),
+						success: true
+					});
+				});
+			};
+			function doPoll(){
+				$.get(url, function(data, status){
+					$('#status').text(data.state);
+					if(data.state == 'Locked'){
+						$('#status').removeClass('btn-success').addClass('btn-danger');
+						$('#button').text('Open Door');
+						$('#open').val('1');
+						$('#image').attr('src', '/img/stuvus-icon-locked.png');
+					}else{
+						$('#status').removeClass('btn-danger').addClass('btn-success');
+						$('#button').text('Lock Door');
+						$('#open').val('0');
+						$('#image').attr('src', '/img/stuvus-icon-open.png');
+					}
+					setTimeout(doPoll, 500);
+				});
+			};
+			$(document).ready(function() {
+				doSetup();
+				doPoll();
+			});
+		</script>
+		<!-- Bootstrap core CSS -->
+		<link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link href="css/door.css" rel="stylesheet">
+	</head>
+	<body class="text-center">
+		<form class="form-door">
+			<img id="image" class="mb-4" src="/img/stuvus-icon-locked.png" alt="" width="72" height="72">
+			<h1 class="h3 mb-3 btn-danger font-weight-normal" id="status">Locked</h1>
+			<button id="button" class="btn btn-lg btn-primary btn-block" type="button">Open Door</button>
+			<input id="open" name="open" type="hidden" value="1">
+		</form>
+	</body>
 </html>
 
