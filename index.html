@@ -5,47 +5,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>Door Status</title>
 		<link rel="shortcut icon" type="image/png" href="/img/stuvus-icon-open.png"/>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script>
-			var url = '/castle/lock';
-			function doSetup(){
-				$('#button').click(function (event) {
-					if($('#open').val() == 1){
-						state_string = 'Unlocked';
-					}else{
-						state_string = 'Locked';
-					};
-					$.ajax({
-						url: url,
-						type: 'PUT',
-						dataType: 'json',
-						data: JSON.stringify({ state: state_string }),
-						success: true
-					});
-				});
-			};
-			function doPoll() {
-				$.get(url, function(data, status) {
-					$('#status').text(data.state);
-					if(data.state == 'Locked') {
-						$('#status').removeClass('btn-success').addClass('btn-danger');
-						$('#button').text('Open Door');
-						$('#open').val('1');
-						$('#image').attr('src', '/img/stuvus-icon-locked.png');
-					}else{
-						$('#status').removeClass('btn-danger').addClass('btn-success');
-						$('#button').text('Lock Door');
-						$('#open').val('0');
-						$('#image').attr('src', '/img/stuvus-icon-open.png');
-					}
-					setTimeout(doPoll, 500);
-				});
-			};
-			$(document).ready(function() {
-				doSetup();
-				doPoll();
-			});
-		</script>
 		<!-- Bootstrap core CSS -->
 		<link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<link href="css/door.css" rel="stylesheet">
@@ -57,6 +16,46 @@
 			<button id="button" class="btn btn-lg btn-primary btn-block" type="button">Open Door</button>
 			<input id="open" name="open" type="hidden" value="1">
 		</form>
+
+		<script src="/js/jquery.min.js"></script>
+		<script>
+			var url = '/castle/lock';
+			var opened = false;
+			function doPoll() {
+				$.get(url, function(data, status) {
+					$('#status').text(data.state);
+					if(data.state == 'Locked') {
+						$('#status').removeClass('btn-success').addClass('btn-danger');
+						$('#button').text('Open Door');
+						$('#image').attr('src', '/img/stuvus-icon-locked.png');
+						opened = false;
+					} else {
+						$('#status').removeClass('btn-danger').addClass('btn-success');
+						$('#button').text('Lock Door');
+						$('#image').attr('src', '/img/stuvus-icon-open.png');
+						opened = true;
+					}
+					setTimeout(doPoll, 500);
+				});
+			};
+			$(document).ready(function() {
+				doPoll();
+				$('#button').click(function (event) {
+					if (opened) {
+						state_string = 'Unlocked';
+					} else {
+						state_string = 'Locked';
+					};
+					$.ajax({
+						url: url,
+						type: 'PUT',
+						dataType: 'json',
+						data: JSON.stringify({ state: state_string }),
+						success: true
+					});
+				});
+			});
+		</script>
 	</body>
 </html>
 
