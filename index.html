@@ -24,7 +24,7 @@
 					});
 				});
 			};
-			function doPoll(){
+			function doPoll() {
 				$.get(url, function(data, status){
 					$('#status').text(data.state);
 					if(data.state == 'Locked'){
