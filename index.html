@@ -25,7 +25,7 @@
 				});
 			};
 			function doPoll() {
-				$.get(url, function(data, status){
+				$.get(url, function(data, status) {
 					$('#status').text(data.state);
 					if(data.state == 'Locked'){
 						$('#status').removeClass('btn-success').addClass('btn-danger');
