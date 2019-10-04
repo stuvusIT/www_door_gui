@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Door Status</title>
+		<link rel="shortcut icon" type="image/png" href="/img/stuvus-icon-open.png"/>
+		<!-- Bootstrap core CSS -->
+		<link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link href="css/door.css" rel="stylesheet">
+	</head>
+	<body class="text-center">
+		<form class="form-door">
+			<img id="image" class="mb-4" src="/img/stuvus-icon-locked.png" alt="" width="72" height="72">
+			<h1 class="h3 mb-3 btn-danger font-weight-normal" id="status">Locked</h1>
+			<button id="button" class="btn btn-lg btn-primary btn-block" type="button">Open Door</button>
+			<input id="open" name="open" type="hidden" value="1">
+		</form>
+
+		<script src="/js/jquery.min.js"></script>
+		<script>
+			var url = '/castle/lock';
+			var opened = false;
+			function doPoll() {
+				$.get(url, function(data, status) {
+					$('#status').text(data.state);
+					if(data.state == 'Locked') {
+						$('#status').removeClass('btn-success').addClass('btn-danger');
+						$('#button').text('Open Door');
+						$('#image').attr('src', '/img/stuvus-icon-locked.png');
+						opened = false;
+					} else {
+						$('#status').removeClass('btn-danger').addClass('btn-success');
+						$('#button').text('Lock Door');
+						$('#image').attr('src', '/img/stuvus-icon-open.png');
+						opened = true;
+					}
+					setTimeout(doPoll, 500);
+				});
+			};
+			$(document).ready(function() {
+				doPoll();
+				$('#button').click(function (event) {
+					if (opened) {
+						state_string = 'Unlocked';
+					} else {
+						state_string = 'Locked';
+					};
+					$.ajax({
+						url: url,
+						type: 'PUT',
+						dataType: 'json',
+						data: JSON.stringify({ state: state_string }),
+						success: true
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
+
