@@ -41,7 +41,7 @@
 			$(document).ready(function() {
 				doPoll();
 				$('#button').click(function (event) {
-					if (opened) {
+					if (!opened) {
 						state_string = 'Unlocked';
 					} else {
 						state_string = 'Locked';
