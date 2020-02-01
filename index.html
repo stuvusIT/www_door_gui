@@ -13,7 +13,7 @@
 		<form class="form-door">
 			<img id="image" class="mb-4" src="/img/stuvus-icon-locked.png" alt="" width="72" height="72">
 			<h1 class="h3 mb-3 btn-danger font-weight-normal" id="status">Locked</h1>
-			<button id="button" class="btn btn-lg btn-primary btn-block" type="button">Open Door</button>
+			<button id="button" class="btn btn-lg btn-primary btn-block" type="button">Unlock Door</button>
 			<input id="open" name="open" type="hidden" value="1">
 		</form>
 
@@ -26,7 +26,7 @@
 					$('#status').text(data.state);
 					if(data.state == 'Locked') {
 						$('#status').removeClass('btn-success').addClass('btn-danger');
-						$('#button').text('Open Door');
+						$('#button').text('Unlock Door');
 						$('#image').attr('src', '/img/stuvus-icon-locked.png');
 						opened = false;
 					} else {
@@ -58,4 +58,3 @@
 		</script>
 	</body>
 </html>
-
